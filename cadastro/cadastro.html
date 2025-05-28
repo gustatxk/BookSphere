@@ -1,12 +1,204 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Cadastro</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <link rel="stylesheet" href="cadastro.css">
 </head>
 <body>
-    
+ <div class="container">
+    <div class="left-panel">
+      <div class="logo">
+        <!-- Exemplo de logo SVG ou ícone -->
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5z"></path></svg>
+      </div>
+      <div class="brand-title">BookSphere</div>
+      <div class="brand-subtitle">Bem-vindo ao BookSphere, seu buscador de livros favorito.
+Aqui você pode explorar desde best-sellers até obras raras.</div>
+      <div class="features">
+        <div class="feature"><div class="feature-dot"></div><span> Encontre o livro perfeito para você</span></div>
+        <div class="feature"><div class="feature-dot"></div><span>Explore milhares de títulos</span></div>
+        <div class="feature"><div class="feature-dot"></div><span>Sua próxima leitura começa aqui</span></div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="form-header">
+        <div class="form-title">Criar conta</div>
+        <div class="form-subtitle">Preencha os dados abaixo para criar uma nova conta.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="nome" class="form-label">Nome:</label>
+        <div class="input-wrapper">
+          <input type="text" id="nome" class="form-input" placeholder="Digite seu nome" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label">E-mail:</label>
+        <div class="input-wrapper">
+          <input type="email" id="email" class="form-input" placeholder="Digite seu e-mail" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="senha" class="form-label">Senha:</label>
+        <div class="input-wrapper">
+          <input type="password" id="senha" class="form-input" placeholder="Digite sua senha" />
+          <button type="button" class="password-toggle" id="togglePassword">
+            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 13c-3.04 0-5.5-2.46-5.5-5.5S8.96 6.5 12 6.5s5.5 2.46 5.5 5.5-2.46 5.5-5.5 5.5zm0-9c-1.93 0-3.5 1.57-3.5 3.5S10.07 15.5 12 15.5s3.5-1.57 3.5-3.5S13.93 8.5 12 8.5z"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <button id="add" class="submit-btn">Cadastrar</button>
+
+      <div class="login-link">
+        Já tem uma conta? <a href="/login/login.html">Faça login</a>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
+
+<script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+            import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-analytics.js";
+            import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+
+            // Your web app's Firebase configuration
+            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+            const firebaseConfig = {
+                apiKey: "AIzaSyA_YbgsZqbJRxd7m3cbeJZzmKywctrGLps",
+            authDomain: "ahf-banco-de-dados.firebaseapp.com",
+            databaseURL: "https://ahf-banco-de-dados-default-rtdb.firebaseio.com",
+            projectId: "ahf-banco-de-dados",
+            storageBucket: "ahf-banco-de-dados.appspot.com",
+            messagingSenderId: "826655126765",
+            appId: "1:826655126765:web:ccf2027c0ee964816f88e4",
+            measurementId: "G-01R115DGS7"
+            };
+
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(app);
+            const db = getDatabase();
+
+            let nome = document.getElementById('nome');
+            let email = document.getElementById('email');
+            let senha = document.getElementById('senha');
+
+            let add = document.getElementById('add');
+
+
+            
+            function isValidEmail(email) {
+                // Regex pattern for email validation
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailPattern.test(email);
+            }
+
+            function AddData() {
+                // Verificar se todos os campos estão preenchidos
+                if (nome.value === '' || email.value === '' || senha.value === '') {
+                    alert("Por favor, preencha todos os campos antes de adicionar.");
+                    return;
+                }
+
+                // Verificar se o email está em um formato válido
+                if (!isValidEmail(email.value)) {
+                    alert("Por favor, insira um endereço de email válido.");
+                    return;
+                }
+
+                const emailExistenteRef = ref(db, 'adm');
+
+                // Verificar se o email já está em uso
+                get(emailExistenteRef)
+                    .then((snapshot) => {
+                        let emailExistente = false;
+                        snapshot.forEach((childSnapshot) => {
+                            const admin = childSnapshot.val();
+                            if (admin.email === email.value) {
+                                emailExistente = true;
+                            }
+                        });
+
+                        if (emailExistente) {
+                            alert("Este email já está em uso. Por favor, escolha outro.");
+                        } else {
+                            // Se o email não estiver em uso, proceda com o registro do administrador
+                            const contagemUsuariosRef = ref(db, 'contagem-usuarios');
+
+                            // Obtém a contagem atual de usuários
+                            get(contagemUsuariosRef)
+                                .then((snapshot) => {
+                                    let proximoNumeroUsuario;
+                                    if (snapshot.exists()) {
+                                        const contagemAtual = snapshot.val();
+                                        proximoNumeroUsuario = contagemAtual + 1;
+                                    } else {
+                                        proximoNumeroUsuario = 1;
+                                    }
+
+                                    const chaveUnica = 'usuario_' + proximoNumeroUsuario;
+
+                                    const novoDado = {
+                                        nome: nome.value,
+                                        email: email.value,
+                                        senha: senha.value
+                                    };
+
+                                    const newDataRef = ref(db, 'adm/' + chaveUnica);
+                                    set(newDataRef, novoDado)
+                                        .then(() => {
+                                            window.location.href = "login.html";
+                                            nome.value = '';
+                                            email.value = '';
+                                            senha.value = '';
+
+                                            set(contagemUsuariosRef, proximoNumeroUsuario)
+                                                .then(() => {
+                                                    console.log("Contagem de usuários atualizada com sucesso!");
+                                                })
+                                                .catch((error) => {
+                                                    console.error("Erro ao atualizar a contagem de usuários:", error);
+                                                });
+                                        })
+                                        .catch((error) => {
+                                            alert("FALHA NO CADASTRO");
+                                            console.log(error);
+                                        });
+                                })
+                                .catch((error) => {
+                                    console.error("Erro ao obter a contagem de usuários:", error);
+                                });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao verificar a existência do email:", error);
+                    });
+            }
+
+
+
+
+            add.addEventListener('click', AddData);
+
+            document.getElementById('togglePassword').addEventListener('click', function() {
+                var senhaClasse = document.querySelector('.invisible-1');
+            var senhaInput = document.getElementById('senha');
+            if (senhaInput.type === 'password') {
+                senhaInput.type = 'text';
+                
+            } else {
+                senhaInput.type = 'password';
+                
+            }
+        });
+</script>
