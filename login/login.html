@@ -1,12 +1,160 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login</title>
-    <link rel="stylesheet" href="login.css">
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <link rel="stylesheet" href="login.css">
 </head>
 <body>
-    
+ <div class="container">
+    <div class="left-panel">
+      <div class="logo">
+        <!-- Exemplo de logo SVG ou ícone -->
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5z"></path></svg>
+      </div>
+      <div class="brand-title">BookSphere</div>
+      <div class="brand-subtitle">Bem-vindo ao BookSphere, seu buscador de livros favorito.
+Aqui você pode explorar desde best-sellers até obras raras.</div>
+      <div class="features">
+        <div class="feature"><div class="feature-dot"></div><span> Encontre o livro perfeito para você</span></div>
+        <div class="feature"><div class="feature-dot"></div><span>Explore milhares de títulos</span></div>
+        <div class="feature"><div class="feature-dot"></div><span>Sua próxima leitura começa aqui</span></div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="form-header">
+        <div class="form-title">Fazer login</div>
+        <div class="form-subtitle">Preencha os dados abaixo para entar em sua conta.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label">E-mail:</label>
+        <div class="input-wrapper">
+          <input type="email" id="emailLogin" name="emailLogin" class="form-input" placeholder="Digite seu e-mail" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="senha" class="form-label">Senha:</label>
+        <div class="input-wrapper">
+          <input type="password" id="senhaLogin" name="senhaLogin" class="form-input" placeholder="Digite sua senha" />
+          <button type="button" class="password-toggle" id="togglePassword">
+            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 13c-3.04 0-5.5-2.46-5.5-5.5S8.96 6.5 12 6.5s5.5 2.46 5.5 5.5-2.46 5.5-5.5 5.5zm0-9c-1.93 0-3.5 1.57-3.5 3.5S10.07 15.5 12 15.5s3.5-1.57 3.5-3.5S13.93 8.5 12 8.5z"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <button id="loginBtn" class="submit-btn">Entrar</button>
+      <div class="group-24">
+            <div id="alertBox" class="alert" ></div> <!-- Área para exibir alertas -->
+          </div>
+      <div class="login-link">
+        Não tem uma conta? <a href="/cadastro/cadastro.html">Criar conta</a>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyA_YbgsZqbJRxd7m3cbeJZzmKywctrGLps",
+        authDomain: "ahf-banco-de-dados.firebaseapp.com",
+        databaseURL: "https://ahf-banco-de-dados-default-rtdb.firebaseio.com",
+        projectId: "ahf-banco-de-dados",
+        storageBucket: "ahf-banco-de-dados.appspot.com",
+        messagingSenderId: "826655126765",
+        appId: "1:826655126765:web:ccf2027c0ee964816f88e4",
+        measurementId: "G-01R115DGS7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase();
+
+
+const emailLogin = document.getElementById('emailLogin');
+const senhaLogin = document.getElementById('senhaLogin');
+const loginBtn = document.getElementById('loginBtn');
+const alertBox = document.getElementById('alertBox'); // Elemento para exibir alertas
+
+function displayAlert(message, type = 'info') {
+alertBox.innerHTML = `<div class="alert-${type}">${message}</div>`;
+}
+
+function clearAlert() {
+alertBox.innerHTML = ''; // Limpar alertas anteriores
+}
+
+function loginUser() {
+clearAlert(); // Limpar alertas anteriores ao tentar fazer login
+const email = emailLogin.value;
+const senha = senhaLogin.value;
+
+const userRef = ref(db, 'usuario');
+const adminRef = ref(db, 'adm');
+
+Promise.all([get(userRef), get(adminRef)]).then(([userSnapshot, adminSnapshot]) => {
+    const userExists = userSnapshot.exists() && Object.values(userSnapshot.val()).some(u => u.email === email && u.senha === senha);
+    const adminExists = adminSnapshot.exists() && Object.values(adminSnapshot.val()).some(u => u.email === email && u.senha === senha);
+    
+    if (userExists) {
+        // Salvar detalhes do usuário no localStorage
+        const userEmail = 'email'; // Corrigido para usar o valor real do email
+        const userType = 'regular';
+        localStorage.setItem('isAuthenticated', true);
+        localStorage.setItem('userEmail', 'email');
+        localStorage.setItem('userType', 'regular');
+        displayAlert("Login bem-sucedido como usuário regular!", 'success');
+        emailLogin.value = '';
+        senhaLogin.value = '';
+        window.location.href = "inicio.html";
+        return; // Evitar redirecionamento repetido
+    } else if (adminExists) {
+        // Salvar detalhes do administrador no localStorage
+        const userEmail = 'email'; // Corrigido para usar o valor real do email
+        const userType = 'admin';
+        localStorage.setItem('isAuthenticated', true);
+        localStorage.setItem('userEmail', 'email');
+        localStorage.setItem('userType', 'admin');
+        displayAlert("Login bem-sucedido como administrador!", 'success');
+        emailLogin.value = '';
+        senhaLogin.value = '';
+        window.location.href = "adm-inicio.html"; // Verifique se o nome do arquivo está correto
+        return; // Evitar redirecionamento repetido
+    } else {
+        displayAlert("Email ou senha incorretos!", 'error');
+    }
+}).catch(error => {
+    console.error("Erro ao obter dados do banco de dados:", error);
+    displayAlert("Erro ao tentar fazer login. Por favor, tente novamente mais tarde.", 'error');
+});
+}
+
+
+
+
+
+    // Adicione o evento de clique ao botão de login
+    loginBtn.addEventListener('click', loginUser);
+
+
+
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        var senhaClasse = document.querySelector('.invisible-1');
+    var senhaInput = document.getElementById('senhaLogin');
+    if (senhaInput.type === 'password') {
+        senhaInput.type = 'text';
+        
+    } else {
+        senhaInput.type = 'password';
+        
+    }
+});
+</script>
