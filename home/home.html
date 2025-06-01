@@ -1,12 +1,29 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <link rel="stylesheet" href="home.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App de Livros</title>
+  <link rel="stylesheet" href="home.css">
 </head>
 <body>
-    
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Buscar livros...">
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" id="tab-search">Pesquisa</div>
+    <div class="tab" id="tab-favorites">Favoritos</div>
+  </div>
+
+  <div class="container">
+    <div class="column active" id="searchResults"></div>
+    <div class="column" id="favoriteList"></div>
+  </div>
+
+  <div id="bookDetails" class="column"></div>
+
+  <div id="notification" class="notification"></div> 
+   <script src="home.js"></script>
 </body>
 </html>
