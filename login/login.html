@@ -114,7 +114,7 @@ Promise.all([get(userRef), get(adminRef)]).then(([userSnapshot, adminSnapshot]) 
         displayAlert("Login bem-sucedido como usuário regular!", 'success');
         emailLogin.value = '';
         senhaLogin.value = '';
-        window.location.href = "inicio.html";
+        window.location.href = "/home/home.html";
         return; // Evitar redirecionamento repetido
     } else if (adminExists) {
         // Salvar detalhes do administrador no localStorage
