@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -61,100 +62,99 @@ Aqui você pode explorar desde best-sellers até obras raras.</div>
 </html>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyA_YbgsZqbJRxd7m3cbeJZzmKywctrGLps",
-        authDomain: "ahf-banco-de-dados.firebaseapp.com",
-        databaseURL: "https://ahf-banco-de-dados-default-rtdb.firebaseio.com",
-        projectId: "ahf-banco-de-dados",
-        storageBucket: "ahf-banco-de-dados.appspot.com",
-        messagingSenderId: "826655126765",
-        appId: "1:826655126765:web:ccf2027c0ee964816f88e4",
-        measurementId: "G-01R115DGS7"
-    };
+const firebaseConfig = {
+  apiKey: "AIzaSyA_YbgsZqbJRxd7m3cbeJZzmKywctrGLps",
+  authDomain: "ahf-banco-de-dados.firebaseapp.com",
+  databaseURL: "https://ahf-banco-de-dados-default-rtdb.firebaseio.com",
+  projectId: "ahf-banco-de-dados",
+  storageBucket: "ahf-banco-de-dados.appspot.com",
+  messagingSenderId: "826655126765",
+  appId: "1:826655126765:web:ccf2027c0ee964816f88e4",
+  measurementId: "G-01R115DGS7"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase();
-
+const app = initializeApp(firebaseConfig);
+const db = getDatabase();
 
 const emailLogin = document.getElementById('emailLogin');
 const senhaLogin = document.getElementById('senhaLogin');
 const loginBtn = document.getElementById('loginBtn');
-const alertBox = document.getElementById('alertBox'); // Elemento para exibir alertas
+const alertBox = document.getElementById('alertBox');
 
+// Função para exibir mensagens
 function displayAlert(message, type = 'info') {
-alertBox.innerHTML = `<div class="alert-${type}">${message}</div>`;
+  alertBox.innerHTML = `<div class="alert-${type}">${message}</div>`;
 }
 
+// Função para limpar mensagens
 function clearAlert() {
-alertBox.innerHTML = ''; // Limpar alertas anteriores
+  alertBox.innerHTML = '';
 }
 
+// Função de login
 function loginUser() {
-clearAlert(); // Limpar alertas anteriores ao tentar fazer login
-const email = emailLogin.value;
-const senha = senhaLogin.value;
+  clearAlert();
 
-const userRef = ref(db, 'usuario');
-const adminRef = ref(db, 'adm');
+  const email = emailLogin.value.trim();
+  const senha = senhaLogin.value;
 
-Promise.all([get(userRef), get(adminRef)]).then(([userSnapshot, adminSnapshot]) => {
-    const userExists = userSnapshot.exists() && Object.values(userSnapshot.val()).some(u => u.email === email && u.senha === senha);
-    const adminExists = adminSnapshot.exists() && Object.values(adminSnapshot.val()).some(u => u.email === email && u.senha === senha);
-    
-    if (userExists) {
-        // Salvar detalhes do usuário no localStorage
-        const userEmail = 'email'; // Corrigido para usar o valor real do email
-        const userType = 'regular';
+  if (!email || !senha) {
+    displayAlert("Preencha todos os campos.", 'error');
+    return;
+  }
+
+  const userRef = ref(db, 'usuario');
+  const adminRef = ref(db, 'adm');
+
+  Promise.all([get(userRef), get(adminRef)])
+    .then(([userSnapshot, adminSnapshot]) => {
+      const userExists = userSnapshot.exists() && Object.values(userSnapshot.val()).some(u => u.email === email && u.senha === senha);
+      const adminExists = adminSnapshot.exists() && Object.values(adminSnapshot.val()).some(u => u.email === email && u.senha === senha);
+
+      if (userExists) {
         localStorage.setItem('isAuthenticated', true);
-        localStorage.setItem('userEmail', 'email');
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userSenha', senha);
         localStorage.setItem('userType', 'regular');
+
         displayAlert("Login bem-sucedido como usuário regular!", 'success');
         emailLogin.value = '';
         senhaLogin.value = '';
-        window.location.href = "/home/home.html";
-        return; // Evitar redirecionamento repetido
-    } else if (adminExists) {
-        // Salvar detalhes do administrador no localStorage
-        const userEmail = 'email'; // Corrigido para usar o valor real do email
-        const userType = 'admin';
+        setTimeout(() => window.location.href = "/home/home.html", 1000);
+        return;
+
+      } else if (adminExists) {
         localStorage.setItem('isAuthenticated', true);
-        localStorage.setItem('userEmail', 'email');
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userSenha', senha);
         localStorage.setItem('userType', 'admin');
+
         displayAlert("Login bem-sucedido como administrador!", 'success');
         emailLogin.value = '';
         senhaLogin.value = '';
-        window.location.href = "adm-inicio.html"; // Verifique se o nome do arquivo está correto
-        return; // Evitar redirecionamento repetido
-    } else {
+        setTimeout(() => window.location.href = "adm-inicio.html", 1000);
+        return;
+
+      } else {
         displayAlert("Email ou senha incorretos!", 'error');
-    }
-}).catch(error => {
-    console.error("Erro ao obter dados do banco de dados:", error);
-    displayAlert("Erro ao tentar fazer login. Por favor, tente novamente mais tarde.", 'error');
-});
+      }
+    })
+    .catch(error => {
+      console.error("Erro ao obter dados do banco de dados:", error);
+      displayAlert("Erro ao tentar fazer login. Por favor, tente novamente mais tarde.", 'error');
+    });
 }
 
+// Evento de clique no botão login
+loginBtn.addEventListener('click', loginUser);
 
-
-
-
-    // Adicione o evento de clique ao botão de login
-    loginBtn.addEventListener('click', loginUser);
-
-
-
-    document.getElementById('togglePassword').addEventListener('click', function() {
-        var senhaClasse = document.querySelector('.invisible-1');
-    var senhaInput = document.getElementById('senhaLogin');
-    if (senhaInput.type === 'password') {
-        senhaInput.type = 'text';
-        
-    } else {
-        senhaInput.type = 'password';
-        
-    }
+// Toggle para mostrar/ocultar senha
+document.getElementById('togglePassword').addEventListener('click', function () {
+  const senhaInput = document.getElementById('senhaLogin');
+  senhaInput.type = senhaInput.type === 'password' ? 'text' : 'password';
 });
+
 </script>
