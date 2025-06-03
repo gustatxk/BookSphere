@@ -105,11 +105,15 @@
 
           if (usuarioId) {
             update(ref(db, `${caminho}/${usuarioId}`), { senha: novaSenha })
-              .then(() => mostrarAlerta('Senha atualizada com sucesso.', 'success'))
+              .then(() => {
+                mostrarAlerta('Senha atualizada com sucesso.', 'success');
+                fecharModalAlterarSenha();  // <-- fecha o modal aqui
+              })
               .catch(() => mostrarAlerta('Erro ao atualizar senha.', 'error'));
           } else {
             mostrarAlerta('Usuário não encontrado.', 'error');
           }
+
         }
       });
     }
