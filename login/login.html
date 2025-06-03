@@ -132,10 +132,10 @@ function loginUser() {
         localStorage.setItem('userSenha', senha);
         localStorage.setItem('userType', 'admin');
 
-        displayAlert("Login bem-sucedido como administrador!", 'success');
+        displayAlert("Login bem-sucedido!", 'success');
         emailLogin.value = '';
         senhaLogin.value = '';
-        setTimeout(() => window.location.href = "adm-inicio.html", 1000);
+        setTimeout(() => window.location.href = "/home/home.html", 1000);
         return;
 
       } else {
