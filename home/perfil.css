@@ -1,0 +1,179 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #3b82f6;
+  --primary-dark: #1d4ed8;
+  --primary-light: #60a5fa;
+  --bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+  --text: #1f2937;
+  --text-light: #6b7280;
+  --white: #ffffff;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --error: #ef4444;
+  --success: #22c55e;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 40px 20px;
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* Estilo do botão fixo no canto superior esquerdo */
+.botao-voltar {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+}
+
+.btn-voltar {
+  background-color: #3b82f6;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-voltar:hover {
+  background-color: #1d4ed8;
+}
+
+
+.container {
+  background: var(--white);
+  padding: 30px 25px;
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.container h2 {
+  font-size: 1.75rem;
+  margin-bottom: 20px;
+  color: var(--primary-dark);
+}
+
+.container p {
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.container p span {
+  color: var(--text-light);
+}
+
+.container h3 {
+  font-size: 1.25rem;
+  margin: 20px 0 10px;
+  color: var(--primary-dark);
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+  background: var(--white);
+  font-size: 1rem;
+  transition: 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.toggle-password {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--text-light);
+  font-size: 1rem;
+}
+
+.btn {
+  margin-top: 10px;
+  padding: 0.75rem;
+  background: var(--primary);
+  border: none;
+  border-radius: 12px;
+  color: var(--white);
+  cursor: pointer;
+  width: 100%;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: 0.3s ease;
+}
+
+.btn:hover {
+  background: var(--primary-dark);
+}
+
+.alert {
+  margin-top: 16px;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.success {
+  background: var(--success);
+  color: var(--white);
+}
+
+.error {
+  background: var(--error);
+  color: var(--white);
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.modal-content {
+  background: var(--white);
+  padding: 25px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: var(--card-shadow);
+  width: 100%;
+  max-width: 350px;
+}
+
+.modal-content p {
+  margin-bottom: 20px;
+  color: var(--text);
+  font-size: 1.125rem;
+}

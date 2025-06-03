@@ -1,29 +1,157 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>App de Livros</title>
-  <link rel="stylesheet" href="home.css">
+  <meta charset="UTF-8">
+  <title>Perfil</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <link rel="stylesheet" href="perfil.css">
 </head>
 <body>
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Buscar livros...">
-  </div>
-
-  <div class="tabs">
-    <div class="tab active" id="tab-search">Pesquisa</div>
-    <div class="tab" id="tab-favorites">Favoritos</div>
-  </div>
 
   <div class="container">
-    <div class="column active" id="searchResults"></div>
-    <div class="column" id="favoriteList"></div>
+    <h2>Perfil</h2>
+    <p><strong>Email:</strong> <span id="email"></span></p>
+
+    <!-- Botão para abrir o modal de alteração de senha -->
+    <button class="btn" onclick="abrirModalAlterarSenha()">Alterar senha</button>
+
+    <button class="btn" onclick="abrirModal()" style="background-color: rgb(235, 26, 26);">Desconectar</button>
+
+    <div id="alerta"></div>
   </div>
 
-  <div id="bookDetails" class="column"></div>
+  <!-- Botão fixo no canto superior esquerdo -->
+  <a href="/home/home.html" class="botao-voltar">
+    <button class="btn-voltar">Voltar</button>
+  </a>
 
-  <div id="notification" class="notification"></div> 
-   <script src="home.js"></script>
+  <!-- Modal de alteração de senha -->
+  <div class="modal" id="modalAlterarSenha">
+    <div class="modal-content">
+      <h3>Alterar senha</h3>
+      <div class="input-group">
+        <input type="password" id="novaSenha" placeholder="Nova senha">
+        <span class="toggle-password" onclick="toggleSenha('novaSenha', this)">👁️</span>
+      </div>
+      <div class="input-group">
+        <input type="password" id="confirmarSenha" placeholder="Confirmar senha">
+        <span class="toggle-password" onclick="toggleSenha('confirmarSenha', this)">👁️</span>
+      </div>
+      <button class="btn" onclick="alterarSenha()">Salvar nova senha</button>
+      <button class="btn" onclick="fecharModalAlterarSenha()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Modal de confirmação de saída -->
+  <div class="modal" id="modalSair">
+    <div class="modal-content">
+      <p>Tem certeza que deseja sair?</p>
+      <button class="btn" onclick="desconectar()">Sim, sair</button>
+      <button class="btn" onclick="fecharModal()">Cancelar</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA_YbgsZqbJRxd7m3cbeJZzmKywctrGLps",
+      authDomain: "ahf-banco-de-dados.firebaseapp.com",
+      databaseURL: "https://ahf-banco-de-dados-default-rtdb.firebaseio.com",
+      projectId: "ahf-banco-de-dados",
+      storageBucket: "ahf-banco-de-dados.appspot.com",
+      messagingSenderId: "826655126765",
+      appId: "1:826655126765:web:ccf2027c0ee964816f88e4",
+      measurementId: "G-01R115DGS7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase();
+
+    const emailEl = document.getElementById('email');
+    const alerta = document.getElementById('alerta');
+
+    const email = localStorage.getItem('userEmail');
+    const tipo = localStorage.getItem('userType');
+
+    if (!email || !tipo) {
+
+    }
+
+    emailEl.textContent = email;
+
+    window.alterarSenha = function() {
+      const novaSenha = document.getElementById('novaSenha').value;
+      const confirmarSenha = document.getElementById('confirmarSenha').value;
+
+      if (novaSenha.length < 4) {
+        mostrarAlerta('A senha deve ter pelo menos 4 caracteres.', 'error');
+        return;
+      }
+      if (novaSenha !== confirmarSenha) {
+        mostrarAlerta('As senhas não coincidem.', 'error');
+        return;
+      }
+
+      const caminho = tipo === 'admin' ? 'adm' : 'usuario';
+      const usuariosRef = ref(db, caminho);
+
+      get(usuariosRef).then(snapshot => {
+        if (snapshot.exists()) {
+          const usuarios = snapshot.val();
+          const usuarioId = Object.keys(usuarios).find(id => usuarios[id].email === email);
+
+          if (usuarioId) {
+            update(ref(db, `${caminho}/${usuarioId}`), { senha: novaSenha })
+              .then(() => mostrarAlerta('Senha atualizada com sucesso.', 'success'))
+              .catch(() => mostrarAlerta('Erro ao atualizar senha.', 'error'));
+          } else {
+            mostrarAlerta('Usuário não encontrado.', 'error');
+          }
+        }
+      });
+    }
+
+    window.desconectar = function() {
+      localStorage.clear();
+      window.location.href = "/landingpag/land.html";
+    }
+
+    function mostrarAlerta(mensagem, tipo) {
+      alerta.innerHTML = `<div class="alert ${tipo}">${mensagem}</div>`;
+      setTimeout(() => { alerta.innerHTML = ''; }, 3000);
+    }
+
+    // Modal de alteração de senha
+    window.abrirModalAlterarSenha = function() {
+      document.getElementById('modalAlterarSenha').style.display = 'flex';
+    }
+
+    window.fecharModalAlterarSenha = function() {
+      document.getElementById('modalAlterarSenha').style.display = 'none';
+    }
+
+    window.toggleSenha = function(idInput, elemento) {
+      const input = document.getElementById(idInput);
+      if (input.type === "password") {
+        input.type = "text";
+        elemento.textContent = '🙈';
+      } else {
+        input.type = "password";
+        elemento.textContent = '👁️';
+      }
+    }
+
+    window.abrirModal = function() {
+      document.getElementById('modalSair').style.display = 'flex';
+    }
+
+    window.fecharModal = function() {
+      document.getElementById('modalSair').style.display = 'none';
+    }
+  </script>
+
 </body>
 </html>
