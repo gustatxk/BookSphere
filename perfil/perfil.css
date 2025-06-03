@@ -31,6 +31,30 @@ body {
   align-items: center;
 }
 
+
+/* Estilo do botão fixo no canto superior esquerdo */
+.botao-voltar {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+}
+
+.btn-voltar {
+  background-color: #3b82f6;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-voltar:hover {
+  background-color: #1d4ed8;
+}
+
+
 .container {
   background: var(--white);
   padding: 30px 25px;
