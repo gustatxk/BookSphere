@@ -169,14 +169,7 @@ function showBookDetails(book) {
     previewLink.innerHTML = `<strong>Visualizar online:</strong> <a href="${info.previewLink}" target="_blank" rel="noopener noreferrer">Clique aqui</a>`;
   }
 
-  const backButton = document.createElement('button');
-  backButton.textContent = 'Voltar';
-  backButton.onclick = () => {
-    bookDetails.style.display = 'none';
-    const activeTab = document.querySelector('.tab.active').id;
-    showTab(activeTab.replace('tab-', ''));
-  };
-
+ 
   bookDetails.appendChild(img);
   bookDetails.appendChild(title);
   bookDetails.appendChild(authors);

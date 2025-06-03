@@ -9,14 +9,25 @@
 </head>
 <body>
 
-<div class="flex justify-end items-center px-4 py-3">
-  <a href="/perfil/perfil.html" class="w-8 h-8 text-gray-700 hover:text-blue-600 transition-colors duration-200">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-full h-full">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M5.121 17.804A9.966 9.966 0 0112 15c2.136 0 4.107.667 5.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-    </svg>
-  </a>
-</div>
+  <header class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50 border-b border-gray-200">
+  <div class="max-w-7xl mx-auto flex justify-between items-center h-16 px-4">
+    <!-- Logo + Título -->
+    <div class="flex items-center space-x-3">
+      <img src="assets/logo.svg" alt="Logo" class="w-10 h-10 object-contain" />
+      <h1 class="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent">
+        BookSphere
+      </h1>
+    </div>
+
+    <!-- Ícone de Perfil -->
+    <a href="/perfil/perfil.html" class="w-8 h-8 text-gray-700 hover:text-blue-600 transition-colors duration-200">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-full h-full">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M5.121 17.804A9.966 9.966 0 0112 15c2.136 0 4.107.667 5.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    </a>
+  </div>
+</header>
 
 
   <div class="search-bar">
@@ -36,6 +47,14 @@
   <div id="bookDetails" class="column"></div>
 
   <div id="notification" class="notification"></div> 
-   <script src="home.js"></script>
+
+  <script src="home.js"></script>
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById("mobile-menu");
+      menu.classList.toggle("hidden");
+    }
+  </script>
+
 </body>
 </html>

@@ -23,8 +23,12 @@
 body {
   min-height: 100vh;
   background: var(--bg);
-  padding: 20px;
+  padding: 0px;
   color: var(--text);
+}
+
+header{
+  margin-bottom: 20px;
 }
 
 .search-bar {
