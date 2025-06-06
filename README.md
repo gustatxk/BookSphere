@@ -39,8 +39,8 @@ Este projeto foi realizado como parte da disciplina **Qualidade e Testes de Soft
 
 ---
 
-## 📷 Capturas de Tela *(opcional)*
+## 📷 Capturas de Tela
 
-*![image](https://github.com/user-attachments/assets/9653f5f8-6e0f-46db-b85c-dbdb0429fbb6)
-*
+![image](https://github.com/user-attachments/assets/9653f5f8-6e0f-46db-b85c-dbdb0429fbb6)
+
 
