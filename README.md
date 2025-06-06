@@ -17,7 +17,8 @@ A interface foi construída com foco na **experiência do usuário**, utilizando
 - CSS3  
 - JavaScript  
 - API Google Books  
-- Git & GitHub  
+- Git & GitHub
+- Tailwind CSS
 
 ---
 
